@@ -1,6 +1,9 @@
 using PyPlot
 using Distributions
 
+include("./likelihoods.jl")
+using Likelihoods
+
 
 srand(123)
 
@@ -76,7 +79,9 @@ function main()
 
 	@printf("Least Squares
 	 	m = %.3f (m_true = %.3f)
-		b = %.3f (b_true = %.3f)", m_ls, m_true, b_ls, b_true)
+		b = %.3f (b_true = %.3f)\n", m_ls, m_true, b_ls, b_true)
 
+	logl = Likelihoods.lnprob(x, y, u, m_ls, b_ls)
+	@printf("Log L = %.3f", logl)
 
 end
