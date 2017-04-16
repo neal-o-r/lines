@@ -19,7 +19,7 @@ function lnlike(x::Array{Float64, 1}, y::Array{Float64, 1},
 	inv_sigma2 = 1.0 ./ u.^2
 
 	log_like = -0.5 * (
-		sum((y .- model).^2 .* inv_sigma2 - log(inv_sigma2)))
+		sum((y - model).^2 .* inv_sigma2 - log(inv_sigma2)))
 
 	return log_like
 

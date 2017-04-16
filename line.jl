@@ -3,6 +3,9 @@ using Distributions
 
 include("./likelihoods.jl")
 using Likelihoods
+include("./sampler.jl")
+using MH
+
 
 
 srand(123)
@@ -36,7 +39,7 @@ function least_sq(x::Array{Float64, 1}, y::Array{Float64, 1},
 end
 
 
-function conf_region(x::Array{Float64, 1}, y::Array{Float64, 1}, 
+function conf_region(x::Array{Float64, 1}, y::Array{Float64, 1},
 			m::Float64, b::Float64)
 
 	n = length(x)
@@ -73,15 +76,22 @@ function main()
 
 	m_ls, b_ls, m_un_ls, b_un_ls = least_sq(x, y, u)
 
-	ci = conf_region(x, y, m_ls, b_ls)
+	ci = conf_region(x, y, m_ls + m_un_ls, b_ls + b_un_ls)
 
 	make_chart(x, y, u, m_ls, b_ls, ci)
 
 	@printf("Least Squares
-	 	m = %.3f (m_true = %.3f)
-		b = %.3f (b_true = %.3f)\n", m_ls, m_true, b_ls, b_true)
+	 	m = %.3f +- %.3f (m_true = %.3f)
+		b = %.3f +- %.3f (b_true = %.3f)\n", 
+			m_ls, m_un_ls, m_true, b_ls, b_un_ls, b_true)
+	
+	mh = MH.metropolis_hastings(Likelihoods.lnprob, 10, 0)
 
-	logl = Likelihoods.lnprob(x, y, u, m_ls, b_ls)
-	@printf("Log L = %.3f", logl)
+	chain = MH.run_sampler(mh, [m_ls, b_ls], [x, y, u])
+
+	figure()
+	PyPlot.plt[:hist](chain[:, 1], 100)
+
+	return chain	
 
 end
