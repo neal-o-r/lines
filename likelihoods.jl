@@ -3,7 +3,7 @@ module Likelihoods
 function lnprior(m::Float64, b::Float64)
 
 	# Non informative priors over a generous range
-	if (-5.0 < m < 5.0) & (-20 < b < 20)
+	if (1.0 < m < 2.0) & (0 < b < 10)
 		return 	0.0
 	end
 

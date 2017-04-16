@@ -4,7 +4,6 @@ type metropolis_hastings
 
 	logl::Function
 	n_step::Int
-	n_burn::Int
 
 end
 
@@ -29,9 +28,14 @@ function acceptance(logl::Function, point::Array{Float64, 1},
 	m_prop, b_prop = point
 	m_curr, b_curr = curr_point
 	
-	ratio = logl(m_prop, b_prop) / logl(m_curr, b_curr)
-	if ratio < rand()		
+	a = logl(m_prop, b_prop) / logl(m_curr, b_curr)
+	if a > 1		
 		return true
+	else
+		if a < rand()
+			return true
+		end
+
 	end
 			
 	return false
@@ -53,7 +57,7 @@ function run_sampler(state::metropolis_hastings, init::Array{Float64, 1},
 
 	chain = zeros(state.n_step, 2)
 	chain[1, :] = init
-	sigma = [0.0001, 0.05]
+	sigma = [0.0001, 0.0005]
 
 	i = 2
 	j = 1
