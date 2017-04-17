@@ -32,7 +32,7 @@ function acceptance(logl::Function, point::Array{Float64, 1},
 	if a > 1		
 		return true
 	else
-		if a < rand()
+		if a > rand()
 			return true
 		end
 
@@ -54,10 +54,9 @@ function run_sampler(state::metropolis_hastings, init::Array{Float64, 1},
 		data::Array{Array{Float64, 1}, 1})
 
 	plogl = partial_logl(state.logl, data)
-
 	chain = zeros(state.n_step, 2)
 	chain[1, :] = init
-	sigma = [0.0001, 0.0005]
+	sigma = [0.001, 0.005]
 
 	i = 2
 	j = 1

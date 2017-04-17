@@ -85,10 +85,10 @@ function main()
 		b = %.3f +- %.3f (b_true = %.3f)\n", 
 			m_ls, m_un_ls, m_true, b_ls, b_un_ls, b_true)
 	
-	mh = MH.metropolis_hastings(Likelihoods.lnprob, 10000)
+	mh = MH.metropolis_hastings(Likelihoods.lnprob, 1000)
 
-	chain = MH.run_sampler(mh, [m_ls, b_ls], [x, y, u])
-
+	chain = MH.run_sampler(mh, [m_ls-0.1, b_ls+0.2], [x, y, u])
+	
 	figure()
 	PyPlot.plt[:hist](chain[:, 1], 100)
 	title("M")
