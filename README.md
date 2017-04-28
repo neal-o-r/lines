@@ -1,5 +1,4 @@
 # Lines
----
 
 Line fitting in Julia. Contains both a least squares fitting routine, and a Metropolis-Hasting sampler for a Bayesian approach.
 
