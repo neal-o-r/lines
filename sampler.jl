@@ -22,22 +22,17 @@ function partial_logl(logl::Function, data::Array{Array{Float64, 1}, 1})
 end
 
 
-function acceptance(logl::Function, point::Array{Float64, 1}, 
+function acceptance(logl::Function, point::Array{Float64, 1},
 			curr_point::Array{Float64, 1})
 
 	m_prop, b_prop = point
 	m_curr, b_curr = curr_point
-	
-	a = logl(m_prop, b_prop) / logl(m_curr, b_curr)
-	if a > 1		
-		return true
-	else
-		if a > rand()
-			return true
-		end
 
+	a = logl(m_prop, b_prop) - logl(m_curr, b_curr)
+	if a > log(rand())
+		return true
 	end
-			
+
 	return false
 
 end
@@ -45,12 +40,12 @@ end
 function proposal_function(sigma::Array{Float64, 1})
 
 	prop = randn(2) .* sigma
-	
+
 	return prop
 
 end
 
-function run_sampler(state::metropolis_hastings, init::Array{Float64, 1}, 
+function run_sampler(state::metropolis_hastings, init::Array{Float64, 1},
 		data::Array{Array{Float64, 1}, 1})
 
 	plogl = partial_logl(state.logl, data)
@@ -63,8 +58,8 @@ function run_sampler(state::metropolis_hastings, init::Array{Float64, 1},
 	while i <= state.n_step
 
 		step = proposal_function(sigma)
-		
-		point = chain[i-1, :] .+ step		
+
+		point = chain[i-1, :] .+ step
 
 		if acceptance(plogl, point, chain[i-1, :])
 			chain[i, :] = point
@@ -74,7 +69,7 @@ function run_sampler(state::metropolis_hastings, init::Array{Float64, 1},
 
 		if i % 100 == 0
 			println("Step", i)
-		end		
+		end
 
 	end
 	println("Acceptance Rate: ", i / j)
